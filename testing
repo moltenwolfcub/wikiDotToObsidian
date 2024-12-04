@@ -23,7 +23,7 @@
         WIKIREQUEST.info.categoryId = 12843090;
         WIKIREQUEST.info.themeId = 2386862;
         WIKIREQUEST.info.requestPageName = "spell:thunderwave";
-        OZONE.request.timestamp = 1733348588;
+        OZONE.request.timestamp = 1733352890;
         OZONE.request.date = new Date();
         WIKIREQUEST.info.lang = 'en';
                 WIKIREQUEST.info.pageUnixName = "spell:thunderwave";

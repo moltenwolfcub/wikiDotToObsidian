@@ -21,7 +21,7 @@ def extractData(html: str):
 	relevantSection = soup.find("div", class_="main-content")
 	mainContent: bs4.element.ResultSet = relevantSection.find("div", id="page-content").find_all(recursive=False)
 
-	data: dict[str, str|int] = {}
+	data: dict[str, str|int|list[str]] = {}
 
 	name = relevantSection.find("div", class_="page-title").find("span").string
 	data["name"] = name
@@ -66,9 +66,17 @@ def extractData(html: str):
 				
 				data["stats"] = text
 				continue
-
-		print(section)
 		
+		if i == len(mainContent)-2:
+			text = section.get_text()
+			if text.lower().count("spell lists") != 1:
+				htmlErr(i)
+			spellLists: list[str] = section.get_text().lower().split(" ")[2:]
+			data["spellLists"] = spellLists
+			continue
+
+		print(section.get_text())
+
 	return data
 
 def htmlErr(index: int):
@@ -77,7 +85,7 @@ def htmlErr(index: int):
 
 
 def main():
-	html = getHTML("https://dnd5e.wikidot.com/spell:thunderwave", False)
+	html = getHTML("https://dnd5e.wikidot.com/spell:thunderwave")
 	data = extractData(html)
 
 	print(data)
