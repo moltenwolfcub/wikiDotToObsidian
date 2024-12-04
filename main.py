@@ -29,13 +29,10 @@ def extractData(html: str):
 	for i in range(len(mainContent)):
 		section: bs4.element.Tag = mainContent[i]
 
-		# print(section)
+		if "class" in section.attrs and section.attrs["class"][0] == "content-separator":
+			continue
 
 		match i:
-			case 0:
-				if section.attrs["class"][0] != "content-separator":
-					htmlErr(i)
-				continue
 			case 1:
 				text: str = section.get_text()
 
@@ -44,6 +41,7 @@ def extractData(html: str):
 
 				source = text.split(" ", 1)[1]
 				data["source"] = source
+				continue
 			case 2:
 				spellType: str = section.get_text()
 
@@ -59,6 +57,7 @@ def extractData(html: str):
 						htmlErr(i)
 
 					data["level"] = int(level)
+				continue
 			case 3:
 				text: str = section.get_text()
 
@@ -66,7 +65,10 @@ def extractData(html: str):
 					htmlErr(i)
 				
 				data["stats"] = text
+				continue
 
+		print(section)
+		
 	return data
 
 def htmlErr(index: int):
