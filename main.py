@@ -1,4 +1,5 @@
 import sys
+import re
 import bs4
 
 from urllib.request import urlopen
@@ -32,7 +33,7 @@ def extractData(html: str):
 		if "class" in section.attrs and section.attrs["class"][0] == "content-separator":
 			continue
 
-		text = section.get_text()
+		text: str = section.get_text()
 
 		match i:
 			case 1:
@@ -75,6 +76,37 @@ def extractData(html: str):
 			data["spellLists"] = spellLists
 			continue
 
+		if text.count("At Higher Levels.") == 1:
+			# spellSlot/level -> damageDice
+			damageDiceIncrease: dict[int,str] = {}
+			# for caption on higher level section
+			uplevelType: str = ""
+			uplevelDie: str = ""
+
+			# Most non-cantrips with a higher level follow this structure
+			match: re.Match[str] | None = re.search(r"When you cast .*?(\d+d\d+).*?each.*?(\d)", text)
+			if match != None:
+				matchGroups = match.groups()
+				uplevelDie = matchGroups[0]
+				startingLevel = int(matchGroups[1])
+
+				diceInfo: list[str] = uplevelDie.split("d")
+
+				for i in range(startingLevel, 10): # 1 more than 9 (the number of spells)
+					above: int = i - startingLevel
+					count: int = int(diceInfo[0]) * above
+
+					modifiedDice: str = f"{count}d{diceInfo[1]}"
+					damageDiceIncrease[i] = modifiedDice
+
+				uplevelType = "dicePerSlot"
+
+
+			data["higherLevels"] = damageDiceIncrease
+			data["uplevelType"] = uplevelType
+			data["uplevelDie"] = uplevelDie
+			continue
+
 		print(section.get_text())
 
 	return data
@@ -85,7 +117,7 @@ def htmlErr(index: int):
 
 
 def main():
-	html = getHTML("https://dnd5e.wikidot.com/spell:thunderwave")
+	html = getHTML("https://dnd5e.wikidot.com/spell:fire-bolt")
 	data = extractData(html)
 
 	print("")
