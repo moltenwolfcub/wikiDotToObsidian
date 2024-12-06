@@ -124,7 +124,9 @@ def extractData(html: str):
 			data["uplevelDie"] = uplevelDie
 			continue
 
-		print(section.get_text())
+		if data.get("description") is None:
+			data["description"] = []
+		data["description"].append(text)
 
 	return data
 
@@ -137,7 +139,7 @@ def main():
 	html = getHTML("https://dnd5e.wikidot.com/spell:fire-bolt")
 	data = extractData(html)
 
-	print("")
+	# print("")
 	for i in data.keys():
 		print(f"\033[94m{i}\033[0m: {data[i]}")
 
