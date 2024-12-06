@@ -27,18 +27,18 @@ def extractData(html: str):
 	name = relevantSection.find("div", class_="page-title").find("span").string
 	data["name"] = name
 
-	for i in range(len(mainContent)):
-		section: bs4.element.Tag = mainContent[i]
+	for level in range(len(mainContent)):
+		section: bs4.element.Tag = mainContent[level]
 
 		if "class" in section.attrs and section.attrs["class"][0] == "content-separator":
 			continue
 
 		text: str = section.get_text()
 
-		match i:
+		match level:
 			case 1:
 				if text.count("Source") != 1:
-					htmlErr(i)
+					htmlErr(level)
 
 				source = text.split(" ", 1)[1]
 				data["source"] = source
@@ -53,56 +53,70 @@ def extractData(html: str):
 				else:
 					level: str = text[0]
 					if not level.isnumeric():
-						htmlErr(i)
+						htmlErr(level)
 
 					data["level"] = int(level)
 				continue
 			case 3:
 				if text.lower().count("casting time") != 1:
-					htmlErr(i)
+					htmlErr(level)
 				
 				data["stats"] = text
 				continue
 		
 		# last item (excluding separators) is always spell lists
-		if i == len(mainContent)-2:
+		if level == len(mainContent)-2:
 			if text.lower().count("spell lists") != 1:
-				htmlErr(i)
+				htmlErr(level)
 
 			spellLists: list[str] = section.get_text().lower().split(".")[1].split(",")
-			for i in range(len(spellLists)):
-				spellLists[i] = spellLists[i].strip()
+			for level in range(len(spellLists)):
+				spellLists[level] = spellLists[level].strip()
 			
 			data["spellLists"] = spellLists
 			continue
 
 		if text.count("At Higher Levels.") == 1:
 			# spellSlot/level -> damageDice
-			damageDiceIncrease: dict[int,str] = {}
+			damageDice: dict[int,str] = {}
 			# for caption on higher level section
 			uplevelType: str = ""
 			uplevelDie: str = ""
 
 			# Most non-cantrips with a higher level follow this structure
-			match: re.Match[str] | None = re.search(r"When you cast .*?(\d+d\d+).*?each.*?(\d)", text)
-			if match != None:
-				matchGroups = match.groups()
+			nonCantrip: re.Match[str] | None = re.search(r"When you cast .*?(\d+d\d+).*?each.*?(\d)", text)
+			# Most cantrips with a higher level follow this structure
+			cantrip: re.Match[str] | None = re.search(r"damage increases by (\d+d\d+) when you reach", text)
+
+			if nonCantrip != None:
+				matchGroups = nonCantrip.groups()
 				uplevelDie = matchGroups[0]
 				startingLevel = int(matchGroups[1])
 
 				diceInfo: list[str] = uplevelDie.split("d")
 
-				for i in range(startingLevel, 10): # 1 more than 9 (the number of spells)
-					above: int = i - startingLevel
+				for level in range(startingLevel, 10): # 1 more than 9 (the number of spells)
+					above: int = level - startingLevel
 					count: int = int(diceInfo[0]) * above
 
 					modifiedDice: str = f"{count}d{diceInfo[1]}"
-					damageDiceIncrease[i] = modifiedDice
+					damageDice[level] = modifiedDice
 
-				uplevelType = "dicePerSlot"
+				uplevelType = "diceIncreasePerSlot"
+
+			if cantrip != None:
+				levels: list[tuple[str]] | None = re.findall(r"(\d+).{2} level \((\d+d\d+)\)", text)
+
+				for match in levels:
+					level = int(match[0])
+					dice = match[1]
+					damageDice[level] = dice
+
+				uplevelDie = cantrip.groups()[0]
+				uplevelType = "levelMilestone"
 
 
-			data["higherLevels"] = damageDiceIncrease
+			data["higherLevels"] = damageDice
 			data["uplevelType"] = uplevelType
 			data["uplevelDie"] = uplevelDie
 			continue
