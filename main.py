@@ -114,6 +114,9 @@ def extractData(html: str):
 
 				uplevelDie = cantrip.groups()[0]
 				uplevelType = "levelMilestone"
+			
+			if cantrip == nonCantrip == None:
+				htmlErr(i, "Unexpected higher Level")
 
 
 			data["higherLevels"] = damageDice
@@ -125,8 +128,8 @@ def extractData(html: str):
 
 	return data
 
-def htmlErr(index: int):
-	print(f"ERROR PARSING HTML (Unexepected layout) [{index}]")
+def htmlErr(index: int, errType: str = "Unexepected layout"):
+	print(f"ERROR PARSING HTML ({errType}) [{index}]")
 	sys.exit(1)
 
 
