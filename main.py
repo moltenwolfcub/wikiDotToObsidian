@@ -27,18 +27,18 @@ def extractData(html: str):
 	name = relevantSection.find("div", class_="page-title").find("span").string
 	data["name"] = name
 
-	for level in range(len(mainContent)):
-		section: bs4.element.Tag = mainContent[level]
+	for i in range(len(mainContent)):
+		section: bs4.element.Tag = mainContent[i]
 
 		if "class" in section.attrs and section.attrs["class"][0] == "content-separator":
 			continue
 
 		text: str = section.get_text()
 
-		match level:
+		match i:
 			case 1:
 				if text.count("Source") != 1:
-					htmlErr(level)
+					htmlErr(i)
 
 				source = text.split(" ", 1)[1]
 				data["source"] = source
@@ -53,25 +53,25 @@ def extractData(html: str):
 				else:
 					level: str = text[0]
 					if not level.isnumeric():
-						htmlErr(level)
+						htmlErr(i)
 
 					data["level"] = int(level)
 				continue
 			case 3:
 				if text.lower().count("casting time") != 1:
-					htmlErr(level)
+					htmlErr(i)
 				
 				data["stats"] = text
 				continue
 		
 		# last item (excluding separators) is always spell lists
-		if level == len(mainContent)-2:
+		if i == len(mainContent)-2:
 			if text.lower().count("spell lists") != 1:
-				htmlErr(level)
+				htmlErr(i)
 
 			spellLists: list[str] = section.get_text().lower().split(".")[1].split(",")
-			for level in range(len(spellLists)):
-				spellLists[level] = spellLists[level].strip()
+			for j in range(len(spellLists)):
+				spellLists[j] = spellLists[j].strip()
 			
 			data["spellLists"] = spellLists
 			continue
