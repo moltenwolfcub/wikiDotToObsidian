@@ -23,7 +23,7 @@
         WIKIREQUEST.info.categoryId = 12843090;
         WIKIREQUEST.info.themeId = 2386862;
         WIKIREQUEST.info.requestPageName = "spell:fire-bolt";
-        OZONE.request.timestamp = 1733521253;
+        OZONE.request.timestamp = 1733607992;
         OZONE.request.date = new Date();
         WIKIREQUEST.info.lang = 'en';
                 WIKIREQUEST.info.pageUnixName = "spell:fire-bolt";

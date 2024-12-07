@@ -134,14 +134,99 @@ def htmlErr(index: int, errType: str = "Unexepected layout"):
 	print(f"ERROR PARSING HTML ({errType}) [{index}]")
 	sys.exit(1)
 
+def buildMarkdown(data: dict) -> str:
+	markdown = ""
+
+	if source := data.get("source"):
+		markdown += f"**Source:** {source}\n"
+
+	if spellType := data.get("spellType"):
+		markdown += f"_{spellType}_\n"
+	
+	if markdown:
+		markdown += "\n"
+	
+	if stats := data.get("stats"):
+		stats: str
+
+		for stat in stats.split("\n"):
+			parts = stat.split(": ")
+
+			markdown += f"**{parts[0]}:** {parts[1]}\n"
+		
+		markdown += "\n"
+	
+	if desc := data.get("description"):
+		desc: list[str]
+
+		for d in desc:
+			markdown += f"{re.sub(r"(\d+d\d+)", r"`dice:\g<1>`", d)}\n\n"
+	
+	if higherLevels := data.get("higherLevels"):
+		higherLevels: dict[int,str]
+		
+		markdown += "#### Higher Levels\n"
+
+		match data.get("uplevelType"):
+			case "levelMilestone":
+				markdown += f"This spell's damage increases by `dice:{data["uplevelDie"]}` at each of these milestones\n\n"
+
+				markdown += formTable(higherLevels, "Level", "Damage Dice")
+			case "diceIncreasePerSlot":
+				pass
+			case _:
+				print(f"ERROR BUILDING MARKDOWN (Unkown uplevel spell type))")
+				sys.exit(1)
+	
+	if spellLists := data.get("spellLists"):
+		markdown += "#### Spell lists\n"
+
+		for spellList in spellLists:
+			spellList: str
+
+			markdown += f"- {spellList.title()}\n"
+
+	return markdown
+
+def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
+	table = ""
+
+	leftMax = len(keyHeading)
+	rightMax = len(valueHeading)
+
+	for k in mapping.keys():
+		left = len(str(k))
+		right = len(str(mapping[k]))
+
+		leftMax = left if left > leftMax else leftMax
+		rightMax = right if right > rightMax else rightMax
+	
+	def padEntry(key: str, value: str) -> str:
+		return f"| {key}{" "*(leftMax-len(key))} | {value}{" "*(rightMax-len(value))} |\n"
+
+	table += padEntry(keyHeading, valueHeading)
+	table += f"| {"-"*leftMax} | {"-"*rightMax} |\n"
+
+	for k in mapping.keys():
+		left = str(k)
+		right = str(mapping[k])
+
+		table += padEntry(left, right)
+
+	return table
+			
 
 def main():
 	html = getHTML("https://dnd5e.wikidot.com/spell:fire-bolt")
 	data = extractData(html)
 
 	# print("")
-	for i in data.keys():
-		print(f"\033[94m{i}\033[0m: {data[i]}")
+	# for i in data.keys():
+	# 	print(f"\033[94m{i}\033[0m: {data[i]}")
+
+	md = buildMarkdown(data)
+
+	print("\n"+md)
 
 if __name__ == '__main__':
 	main()
