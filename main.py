@@ -91,16 +91,16 @@ def extractData(html: str):
 			if nonCantrip != None:
 				matchGroups = nonCantrip.groups()
 				uplevelDie = matchGroups[0]
-				startingLevel = int(matchGroups[1])
+				startingSlot = int(matchGroups[1])
 
 				diceInfo: list[str] = uplevelDie.split("d")
 
-				for level in range(startingLevel, 10): # 1 more than 9 (the number of spells)
-					above: int = level - startingLevel
+				for slot in range(startingSlot, 10): # 1 more than 9 (the number of spell slots)
+					above: int = slot - startingSlot
 					count: int = int(diceInfo[0]) * above
 
 					modifiedDice: str = f"{count}d{diceInfo[1]}"
-					damageDice[level] = modifiedDice
+					damageDice[slot] = modifiedDice
 
 				uplevelType = "diceIncreasePerSlot"
 
@@ -128,10 +128,23 @@ def extractData(html: str):
 			data["description"] = []
 		data["description"].append(text)
 
+		if m := re.findall(r"(\d+d\d+)", text):
+			if data.get("baseDie") is not None:
+				htmlErr(i, "More than one dice in description")
+			
+			if len(m) > 1:
+				htmlErr(i, "More than one dice in description")
+
+			data["baseDie"] = m[0] 
+
 	return data
 
 def htmlErr(index: int, errType: str = "Unexepected layout"):
 	print(f"ERROR PARSING HTML ({errType}) [{index}]")
+	sys.exit(1)
+
+def markdownErr(errtype: str):
+	print(f"ERROR BUILDING MARKDOWN ({errtype}))")
 	sys.exit(1)
 
 def buildMarkdown(data: dict) -> str:
@@ -160,7 +173,11 @@ def buildMarkdown(data: dict) -> str:
 		desc: list[str]
 
 		for d in desc:
-			markdown += f"{re.sub(r"(\d+d\d+)", r"`dice:\g<1>`", d)}\n\n"
+			d = re.sub(r"(\d+d\d+)", r"`dice:\g<1>`", d)
+			d = re.sub(r"(\w+ spell attack)", r"**\g<1>**", d)
+			d = re.sub(r"(\w+ saving throw)", r"**\g<1>**", d)
+
+			markdown += d+"\n\n"
 	
 	if higherLevels := data.get("higherLevels"):
 		higherLevels: dict[int,str]
@@ -171,11 +188,36 @@ def buildMarkdown(data: dict) -> str:
 			case "levelMilestone":
 				markdown += f"This spell's damage increases by `dice:{data["uplevelDie"]}` at each of these milestones\n\n"
 
-				markdown += formTable(higherLevels, "Level", "Damage Dice")
+				tableSource = higherLevels.copy()
+
+				if (baseDie := data.get("baseDie")) is not None:
+					tableSource[1] = baseDie
+				
+				tableSource = {k: f"`dice:{tableSource[k]}`" for k in sorted(tableSource)}
+
+				markdown += formTable(tableSource, "Level", "Damage Dice")
 			case "diceIncreasePerSlot":
-				pass
+				markdown += f"This spell's damage increases by `dice:{data["uplevelDie"]}` when cast with a higher slot\n\n"
+
+				tableSource = higherLevels.copy()
+				if (baseDie := data.get("baseDie")) is None:
+					markdownErr("No base dice found")
+				else:
+					baseDie: str
+
+					for key in tableSource:
+						dice = tableSource[key].split("d")
+						base = baseDie.split("d")
+
+						if dice[1] != base[1]:
+							markdownErr(f"Base die and increase dice aren't the same dice type (at level {key})")
+
+						tableSource[key] = f"`dice:{int(dice[0]) + int(base[0])}d{dice[1]}`"
+
+				markdown += formTable(tableSource, "Slot", "Damage Dice")
+
 			case _:
-				print(f"ERROR BUILDING MARKDOWN (Unkown uplevel spell type))")
+				markdownErr("Unknown uplevel spell type")
 				sys.exit(1)
 	
 	if spellLists := data.get("spellLists"):
@@ -217,7 +259,7 @@ def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
 			
 
 def main():
-	html = getHTML("https://dnd5e.wikidot.com/spell:fire-bolt")
+	html = getHTML("https://dnd5e.wikidot.com/spell:fireball")
 	data = extractData(html)
 
 	# print("")
