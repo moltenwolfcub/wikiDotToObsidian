@@ -4,6 +4,15 @@ import bs4
 
 from urllib.request import urlopen
 
+def getSpellName() -> str:
+	user = input("Spell Name >>> ")
+	user = user.strip().lower() \
+		.replace("(UA)","").strip() \
+		.replace("'", "") \
+		.replace(" ","-") \
+		.replace("/","-")
+	return user
+
 def getHTML(spell:str) -> str:
 	url = f"https://dnd5e.wikidot.com/spell:{spell}"
 	file = f"cache/{spell}"
@@ -262,7 +271,9 @@ def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
 			
 
 def main():
-	html = getHTML("fire-bolt")
+	spell = getSpellName()
+
+	html = getHTML(spell)
 	data = extractData(html)
 
 	# print("")
