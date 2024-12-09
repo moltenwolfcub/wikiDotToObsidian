@@ -1,6 +1,7 @@
 import sys
 import re
 import bs4
+import os
 
 from urllib.request import urlopen
 from urllib.error import HTTPError
@@ -272,8 +273,18 @@ def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
 	return table
 
 
-def writeToFile(md: str, name: str, dir="out/") -> None:
-	with open(f"{dir}{name}.md", "w") as f:
+def writeToFile(md: str, name: str, level: int, dir="out/") -> None:
+	subFolder = ""
+	if level == 0:
+		subFolder = "Cantrips"
+	else:
+		subFolder = f"Level {level}"
+
+	completeDir = f"{dir}{subFolder}"
+	if not os.path.isdir(completeDir):
+		os.mkdir(completeDir)
+
+	with open(f"{completeDir}/{name}.md", "w") as f:
 		f.write(md)
 
 def main():
@@ -290,14 +301,14 @@ def main():
 
 	data = extractData(html)
 
-	# print("")
-	# for i in data.keys():
-	# 	print(f"\033[94m{i}\033[0m: {data[i]}")
+	print("")
+	for i in data.keys():
+		print(f"\033[94m{i}\033[0m: {data[i]}")
 
 	md = buildMarkdown(data)
 	# print("\n"+md)
 
-	writeToFile(md, data["name"])
+	writeToFile(md, data["name"], data["level"])
 
 if __name__ == '__main__':
 	main()
