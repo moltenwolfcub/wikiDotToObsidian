@@ -3,6 +3,8 @@ import re
 import bs4
 
 from urllib.request import urlopen
+from urllib.error import HTTPError
+from http.client import InvalidURL
 
 def getSpellName() -> str:
 	user = input("Spell Name >>> ")
@@ -275,9 +277,17 @@ def writeToFile(md: str, name: str) -> None:
 		f.write(md)
 
 def main():
-	spell = getSpellName()
+	while True:
+		try:
+			spell = getSpellName()
+			html = getHTML(spell)
+		except HTTPError:
+			print("Couldn't find that spell")
+		except InvalidURL:
+			print("spell contains invalid characters. Please try again")
+		else:
+			break
 
-	html = getHTML(spell)
 	data = extractData(html)
 
 	# print("")
