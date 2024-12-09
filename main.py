@@ -2,6 +2,7 @@ import sys
 import re
 import bs4
 import os
+import argparse
 
 from urllib.request import urlopen
 from urllib.error import HTTPError
@@ -273,7 +274,7 @@ def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
 	return table
 
 
-def writeToFile(md: str, name: str, level: int, dir="out/") -> None:
+def writeToFile(md: str, name: str, level: int, dir: str) -> None:
 	subFolder = ""
 	if level == 0:
 		subFolder = "Cantrips"
@@ -287,7 +288,7 @@ def writeToFile(md: str, name: str, level: int, dir="out/") -> None:
 	with open(f"{completeDir}/{name}.md", "w") as f:
 		f.write(md)
 
-def main():
+def main(dir: str = "out/"):
 	while True:
 		try:
 			spell = getSpellName()
@@ -300,15 +301,20 @@ def main():
 			break
 
 	data = extractData(html)
-
-	print("")
-	for i in data.keys():
-		print(f"\033[94m{i}\033[0m: {data[i]}")
-
 	md = buildMarkdown(data)
+	writeToFile(md, data["name"], data["level"], dir)
+
+	# for i in data.keys():
+	# 	print(f"\033[94m{i}\033[0m: {data[i]}")
+
 	# print("\n"+md)
 
-	writeToFile(md, data["name"], data["level"])
-
 if __name__ == '__main__':
-	main()
+	parser = argparse.ArgumentParser(
+		prog= "Wikidot to Obsidian",
+		description= "Generates Obsidian markdown files from DnD Wikidot"
+	)
+	parser.add_argument("directory")
+	args = parser.parse_args()
+	
+	main(args.directory)
