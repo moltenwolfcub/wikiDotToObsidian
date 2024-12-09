@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-    <title>Fireball - DND 5th Edition</title>
+    <title>Fire Bolt - DND 5th Edition</title>
     
     
     
@@ -22,12 +22,12 @@
         WIKIREQUEST.info.siteUnixName = "dnd5e";
         WIKIREQUEST.info.categoryId = 12843090;
         WIKIREQUEST.info.themeId = 2386862;
-        WIKIREQUEST.info.requestPageName = "spell:fireball";
-        OZONE.request.timestamp = 1733692719;
+        WIKIREQUEST.info.requestPageName = "spell:fire-bolt";
+        OZONE.request.timestamp = 1733775612;
         OZONE.request.date = new Date();
         WIKIREQUEST.info.lang = 'en';
-                WIKIREQUEST.info.pageUnixName = "spell:fireball";
-        WIKIREQUEST.info.pageId = 52941637;
+                WIKIREQUEST.info.pageUnixName = "spell:fire-bolt";
+        WIKIREQUEST.info.pageId = 52571754;
                         WIKIREQUEST.info.lang = "en";
         OZONE.lang = "en";
         var isUAMobile = !!/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -290,7 +290,7 @@ null {display: none !important;}
       <div class="main-content-wrap col-md-9">
       
         <div class="main-content">
-          <div class="page-title page-header"><span>Fireball</span></div>
+          <div class="page-title page-header"><span>Fire Bolt</span></div>
           
           
         
@@ -320,14 +320,14 @@ window['nitroAds'].createAd('wad-dnd5e-above-content', {
 
 
 <p>Source: Player's Handbook</p>
-<p><em>3rd-level evocation</em></p>
+<p><em>Evocation cantrip</em></p>
 <p><strong>Casting Time:</strong> 1 action<br />
-<strong>Range:</strong> 150 feet<br />
-<strong>Components:</strong> V, S, M (a tiny ball of bat guano and sulfur)<br />
+<strong>Range:</strong> 120 feet<br />
+<strong>Components:</strong> V, S<br />
 <strong>Duration:</strong> Instantaneous</p>
-<p>A bright streak flashes from your pointing finger to a point you choose within range then blossoms with a low roar into an explosion of flame. Each creature in a 20-foot radius must make a Dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a successful one. The fire spreads around corners. It ignites flammable objects in the area that aren’t being worn or carried.</p>
-<p><strong><em>At Higher Levels.</em></strong> When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.</p>
-<p><strong><em>Spell Lists.</em></strong> <a href="http://dnd5e.wikidot.com/spells:sorcerer">Sorcerer</a>, <a href="http://dnd5e.wikidot.com/spells:wizard">Wizard</a></p>
+<p>You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage. A flammable object hit by this spell ignites if it isn’t being worn or carried.</p>
+<p><strong><em>At Higher Levels.</em></strong> This spell’s damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10).</p>
+<p><strong><em>Spell Lists.</em></strong> <a href="http://dnd5e.wikidot.com/spells:artificer">Artificer</a>, <a href="http://dnd5e.wikidot.com/spells:sorcerer">Sorcerer</a>, <a href="http://dnd5e.wikidot.com/spells:wizard">Wizard</a></p>
 <div class="content-separator" style="display: none:"></div>
 
 
@@ -372,7 +372,7 @@ window['nitroAds'].createAd('wad-dnd5e-below-content', {
     
 
 
-          <div class="page-tags"><a href="/system:page-tags/tag/evocation#pages">evocation</a><a href="/system:page-tags/tag/sorcerer#pages">sorcerer</a><a href="/system:page-tags/tag/third#pages">third</a><a href="/system:page-tags/tag/wizard#pages">wizard</a></div>
+          <div class="page-tags"><a href="/system:page-tags/tag/artificer#pages">artificer</a><a href="/system:page-tags/tag/cantrip#pages">cantrip</a><a href="/system:page-tags/tag/evocation#pages">evocation</a><a href="/system:page-tags/tag/sorcerer#pages">sorcerer</a><a href="/system:page-tags/tag/wizard#pages">wizard</a></div>
           <div class="page-info-break"></div>
           <div class="page-options-container"></div>
           <div id="action-area" style="display: none;"></div>

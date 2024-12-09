@@ -4,18 +4,21 @@ import bs4
 
 from urllib.request import urlopen
 
-def getHTML(url:str, refresh: bool = True) -> str:
-	if not refresh:
-		with open("testing", "r") as f:
-			html: str = f.read()
+def getHTML(spell:str) -> str:
+	url = f"https://dnd5e.wikidot.com/spell:{spell}"
+	file = f"cache/{spell}"
 
-	else:
+	try:
+		with open(file, "r") as f:
+			return f.read()
+	except FileNotFoundError:
 		with urlopen(url) as response:
 			html: str = response.read().decode('utf-8')
-			with open("testing", "w") as f:
+
+			with open(file, "w") as f:
 				f.write(html)
-	
-	return html
+			
+			return html
 
 def extractData(html: str):
 	soup = bs4.BeautifulSoup(html, "html.parser")
@@ -259,7 +262,7 @@ def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
 			
 
 def main():
-	html = getHTML("https://dnd5e.wikidot.com/spell:fireball")
+	html = getHTML("fire-bolt")
 	data = extractData(html)
 
 	# print("")
