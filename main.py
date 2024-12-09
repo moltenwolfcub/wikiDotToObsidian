@@ -272,8 +272,8 @@ def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
 	return table
 
 
-def writeToFile(md: str, name: str) -> None:
-	with open(f"out/{name}.md", "w") as f:
+def writeToFile(md: str, name: str, dir="out/") -> None:
+	with open(f"{dir}{name}.md", "w") as f:
 		f.write(md)
 
 def main():
@@ -295,7 +295,7 @@ def main():
 	# 	print(f"\033[94m{i}\033[0m: {data[i]}")
 
 	md = buildMarkdown(data)
-	print("\n"+md)
+	# print("\n"+md)
 
 	writeToFile(md, data["name"])
 
