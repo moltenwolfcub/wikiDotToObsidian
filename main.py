@@ -317,4 +317,8 @@ if __name__ == '__main__':
 	parser.add_argument("directory")
 	args = parser.parse_args()
 	
-	main(args.directory)
+	while True:
+		main(args.directory)
+
+		if input("[Q] to exit. Anything else to go again.").lower().strip() == "q":
+			break
