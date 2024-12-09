@@ -268,7 +268,11 @@ def formTable(mapping: dict, keyHeading: str, valueHeading: str) -> str:
 		table += padEntry(left, right)
 
 	return table
-			
+
+
+def writeToFile(md: str, name: str) -> None:
+	with open(f"out/{name}.md", "w") as f:
+		f.write(md)
 
 def main():
 	spell = getSpellName()
@@ -281,8 +285,9 @@ def main():
 	# 	print(f"\033[94m{i}\033[0m: {data[i]}")
 
 	md = buildMarkdown(data)
-
 	print("\n"+md)
+
+	writeToFile(md, data["name"])
 
 if __name__ == '__main__':
 	main()
