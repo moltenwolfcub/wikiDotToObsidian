@@ -192,6 +192,10 @@ def buildMarkdown(data: dict) -> str:
 			d = re.sub(r"(\d+d\d+)", r"`dice:\g<1>`", d)
 			d = re.sub(r"(\w+ spell attack)", r"**\g<1>**", d)
 			d = re.sub(r"(\w+ saving throw)", r"**\g<1>**", d)
+			d = re.sub(r"(\d+ feet)", r"**\g<1>**", d)
+
+			d = re.sub(r"((?:Strength|Dexterity|Constitution|Intelligence|Wisdom|charisma)(?: \(.+\))? check)", r"**\g<1>**", d, flags=re.IGNORECASE)
+			d = re.sub(r"(spell save DC)", r"**\g<1>**", d)
 
 			markdown += d+"\n\n"
 	
