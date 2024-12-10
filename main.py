@@ -14,7 +14,8 @@ def getSpellName() -> str:
 		.replace("(UA)","").strip() \
 		.replace("'", "") \
 		.replace(" ","-") \
-		.replace("/","-")
+		.replace("/","-") \
+		.replace(":","-")
 	return user
 
 def getHTML(spell:str) -> str:
