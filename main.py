@@ -133,7 +133,12 @@ def extractData(html: str):
 				uplevelType = "levelMilestone"
 			
 			if cantrip == nonCantrip == None:
-				htmlErr(i, "Unexpected higher Level")
+				print("No dice found for damage uplevel found so outputing text block")
+				block = text.rstrip("At Higher Levels.").strip()
+
+				uplevelDie = block
+				uplevelType = "textBlock"
+				damageDice[0] = "dummy"
 
 
 			data["higherLevels"] = damageDice
@@ -236,6 +241,9 @@ def buildMarkdown(data: dict) -> str:
 						tableSource[key] = f"`dice:{int(dice[0]) + int(base[0])}d{dice[1]}`"
 
 				markdown += formTable(tableSource, "Slot", "Damage Dice")
+
+			case "textBlock":
+				markdown += f"{data["uplevelDie"]}\n\n"
 
 			case _:
 				markdownErr("Unknown uplevel spell type")
