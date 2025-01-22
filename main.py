@@ -295,6 +295,7 @@ def writeToFile(md: str, name: str, level: int, dir: str) -> None:
 		subFolder = f"Level {level}"
 
 	name = name.replace(":", " -")
+	name = name.replace("/", "-")
 
 	completeDir = f"{dir}{subFolder}"
 	if not os.path.isdir(completeDir):
