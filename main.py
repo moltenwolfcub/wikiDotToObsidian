@@ -308,6 +308,12 @@ def main(dir: str = "out/"):
 	while True:
 		try:
 			spell = getSpellName()
+			if spell == "":
+				print("Please enter a spell name or q to exit")
+				continue
+			elif spell == "q":
+				sys.exit()
+
 			html = getHTML(spell)
 		except HTTPError:
 			print("Couldn't find that spell")
