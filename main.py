@@ -150,7 +150,7 @@ def extractData(html: str):
 			data["description"] = []
 		data["description"].append(text)
 
-		if m := re.findall(r"(\d+d\d+)", text):
+		if m := re.findall(r"(\d*d\d+)", text):
 			if data.get("baseDie") is not None:
 				htmlErr(i, "More than one dice in description")
 			
@@ -195,7 +195,7 @@ def buildMarkdown(data: dict) -> str:
 		desc: list[str]
 
 		for d in desc:
-			d = re.sub(r"(\d+d\d+)", r"`dice:\g<1>`", d)
+			d = re.sub(r"(\d*d\d+)", r"`dice:\g<1>`", d)
 			d = re.sub(r"(\w+ spell attack)", r"**\g<1>**", d)
 			d = re.sub(r"(\w+ saving throw)", r"**\g<1>**", d)
 			d = re.sub(r"(\d+ feet)", r"**\g<1>**", d)
