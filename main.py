@@ -240,9 +240,12 @@ def buildMarkdown(data: dict) -> str:
 						base = baseDie.split("d")
 
 						if dice[1] != base[1]:
-							markdownErr(f"Base die and increase dice aren't the same dice type (at level {key})")
+							# markdownErr(f"Base die and increase dice aren't the same dice type (at level {key})")
+							print("Base die and increase dice aren't the same dice type. MIGHT NEED SOME HUMAN ADJUSTMENT")
+							tableSource[key] = f"`dice:{baseDie}+{tableSource[key]}`"
 
-						tableSource[key] = f"`dice:{int(dice[0]) + int(base[0])}d{dice[1]}`"
+						else:
+							tableSource[key] = f"`dice:{int(dice[0]) + int(base[0])}d{dice[1]}`"
 
 				markdown += formTable(tableSource, "Slot", "Damage Dice")
 
