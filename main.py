@@ -152,12 +152,16 @@ def extractData(html: str):
 
 		if m := re.findall(r"(\d*d\d+)", text):
 			if data.get("baseDie") is not None:
-				htmlErr(i, "More than one dice in description")
+				# htmlErr(i, "More than one dice in description")
+				print("More than one dice in description just using first one. MIGHT NEED SOME HUMAN ADJUSTMENT.")
 			
-			if len(m) > 1:
-				htmlErr(i, "More than one dice in description")
+			elif len(m) > 1:
+				# htmlErr(i, "More than one dice in description")
+				print("More than one dice in description just using first one. MIGHT NEED SOME HUMAN ADJUSTMENT.")
+				data["baseDie"] = m[0] 
 
-			data["baseDie"] = m[0] 
+			else:
+				data["baseDie"] = m[0] 
 
 	return data
 
